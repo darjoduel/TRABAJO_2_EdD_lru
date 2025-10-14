@@ -4,11 +4,20 @@
 #ifndef ESTRUCTURAS_H
 #define ESTRUCTURAS_H
 
-typedef struct
-{
-    char *name;
-    int last_call;
-}Data_;
+
+typedef struct Node {
+    char *data;
+    struct Node *next;
+    struct Node *prev;
+} Node_;
+
+
+typedef struct Cache {
+    Node_ *head;
+    Node_ *tail;
+    int size;
+    int capacity;
+} Cache_;
 
 
 #endif

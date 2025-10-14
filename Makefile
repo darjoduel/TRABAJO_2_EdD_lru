@@ -1,13 +1,21 @@
-TARGET = main.exe
-SRC = $(wildcard *.c)
 CC = gcc
-CFLAGS = -Wall -Wextra -std=c11 -mconsole
+CFLAGS = -Wall -Wextra -std=c99
+OBJ = main.o
+DEPS = function.h commands.h structures.h
 
-all: $(TARGET)
-	$(CC) $(SRC) -o $(TARGET) $(CFLAGS)
+all: main.exe
+
+main.exe: $(OBJ)
+	$(CC) $(CFLAGS) -o main.exe $(OBJ)
+
+
+main.o: main.c $(DEPS)
+	$(CC) $(CFLAGS) -c main.c
+
+
+
+
 
 clean:
-	del /Q $(TARGET) 2>nul || true
+	del /Q *.o main.exe
 
-run: $(TARGET)
-	.\$(TARGET)

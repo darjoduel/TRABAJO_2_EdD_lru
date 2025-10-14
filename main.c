@@ -1,21 +1,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include "commands.h"
 
 #define help 168620
 #define create 16485289
 #define add 16128
-//#define search 
+#define search 17952822
 #define all 16216
 #define get 16754
 #define exit 167494
 
 int CharToInt(char *str);
+int CharToNum(char *str);
 
 int main(int argc, char *argv[])
 {
-    //int command = CharToInt(argv[1]);
+    Cache_ cache;
 
     if (argc < 2) {
         printf("No hay argumentos\nIntente:[--help]\n");
@@ -32,10 +33,15 @@ int main(int argc, char *argv[])
         printf("'exit' para eliminar el cache y terminar\n");
         break;
     case create:
+        lru_create(&cache, CharToNum(argv[2]));
         break;
     case add:
+        lru_add(&cache, argv[2]);
+        break;
+    case search:
         break;
     case all:
+        lru_all(&cache);
         break;
     case get:
         break;
@@ -44,9 +50,13 @@ int main(int argc, char *argv[])
     default:
         break;
     }
-    printf("numero letra:%d\n",CharToInt(argv[1]));
 
     return 0;
+}
+
+int CharToNum(char *str)
+{
+    return atoi(str);
 }
 
 int CharToInt(char *str)
