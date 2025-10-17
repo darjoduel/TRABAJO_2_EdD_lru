@@ -1,3 +1,0 @@
-Capacidad: 5
-Tamano actual: 3
-Orden de datos (de más reciente a menos reciente):

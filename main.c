@@ -16,9 +16,9 @@ int CharToNum(char *str);
 
 int main(int argc, char *argv[])
 {
-    Cache_ cache;
+    Cache_ *cache = NULL;
 
-    if (argc < 2) {
+    if (argc < 3) {
         printf("No hay argumentos\nIntente:[--help]\n");
         return 0;
     }
@@ -33,19 +33,28 @@ int main(int argc, char *argv[])
         printf("'exit' para eliminar el cache y terminar\n");
         break;
     case create:
-        lru_create(&cache, CharToNum(argv[2]));
+        cache = lru_create(CharToNum(argv[2]));
         break;
     case add:
-        lru_add(&cache, argv[2]);
+        cache = lru_load_cache(cache);
+        if(cache == NULL) {
+            printf("Error al cargar el cache. Asegurese de crear uno primero.\n");
+            return -1;
+        }
+        lru_add(cache, argv[2]);
         break;
     case search:
         break;
     case all:
-        lru_all(&cache);
         break;
     case get:
         break;
     case exit:
+        if(cache != NULL) {
+            free(cache->data);
+            free(cache);
+            printf("Cache eliminado\n");
+        }
         break;
     default:
         break;
