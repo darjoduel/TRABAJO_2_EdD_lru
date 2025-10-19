@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
 {
     Cache_ *cache = NULL;
 
-    if (argc < 3) {
+    if (argc < 3 && CharToInt(argv[1]) != help && CharToInt(argv[1]) != all && CharToInt(argv[1]) != exit){
         printf("No hay argumentos\nIntente:[--help]\n");
         return 0;
     }
@@ -37,6 +37,7 @@ int main(int argc, char *argv[])
         break;
     case add:
         cache = lru_load_cache(cache);
+        load_data(cache);
         if(cache == NULL) {
             printf("Error al cargar el cache. Asegurese de crear uno primero.\n");
             return -1;
@@ -46,6 +47,13 @@ int main(int argc, char *argv[])
     case search:
         break;
     case all:
+        cache= lru_load_cache(cache);
+        load_data(cache);
+        if(cache == NULL) {
+            printf("Error al cargar el cache. Asegurese de crear uno primero.\n");
+            return -1;
+        }
+        lru_all(cache);
         break;
     case get:
         break;
