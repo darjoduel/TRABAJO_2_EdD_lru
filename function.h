@@ -150,6 +150,38 @@ int load_data(Cache_ *cache)
     return 0;
 }
 
+void Search_data(Cache_ *cache, const char *key){
+
+        if (cache == NULL || cache->head == NULL){
+
+                printf("Cache vacio o no inicializado");
+                return -1;
+
+        }
+
+        Node_ *current = cache->head;
+
+        int posicion = 0;
+
+        while (current != NULL){
+        
+        if(strcmp(current->data, key)==0){
+
+                printf ("elemento %s encontrado en la posicion %d", key, posicion);
+                return posicion;
+        
+        }
+        
+        current = current->next;
+
+        position = position + 1;
+        
+        }
+        
+        printf ("elemento no encontrado en el cache");
+        return -1;
+}       
+
 int update_data(char *data)//crea o actualiza el archivo data.txt
 {
     FILE *cachedata = fopen("cache/data.txt", "a");
