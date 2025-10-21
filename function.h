@@ -17,16 +17,7 @@ int create_folder()//crear carpeta cache
     return 0;
 }
 
-int change_folder(const char *path)//cambiar carpeta
-{
-    if(chdir(path) != 0) {
-        printf("Error al abrir la carpeta %s\n", path);
-        return 1;
-    }
-    return 0;
-}
-
-int load_cachedata(Cache_ *cache)
+int load_cachedata(Cache_ *cache)//carga metadata.txt en la estructura Cache_
 {
     if (cache == NULL) {
         printf("Error: cache es NULL\n");
@@ -50,54 +41,7 @@ int load_cachedata(Cache_ *cache)
         }
     }
     
-    //printf("Cachedata cargado: Capacidad=%d, Tamano actual=%d\n", cache->capacity, cache->size);
     fclose(cachedata);
-    return 0;
-}
-
-int load_data(Cache_ *cache)
-{
-    FILE *data = fopen("cache/data.txt", "r");
-    if (data == NULL)
-    {
-        printf("Error al abrir el archivo data.txt\n");
-        return -1;
-    }
-    char buffer[256];
-    int index = 0;
-    cache->data = (char **)malloc(cache->capacity * sizeof(char *));
-    if (cache->data == NULL)
-    {
-        printf("Error al asignar memoria para los datos del cache\n");
-        fclose(data);
-        return -1;
-    }
-    else
-    {
-        cache->data[index] = strdup(buffer);    
-    }
-    while (fgets(buffer, sizeof(buffer), data) && index <= cache->size)
-    {
-        printf("4");
-        buffer[strcspn(buffer, "\n")] = 0; // Eliminar el salto de línea
-        cache->data[index] = strdup(buffer);
-        index++;
-    }/**/
-    fclose(data);
-    return 0;
-}
-
-int update_data(char *data)
-{
-    FILE *cachedata = fopen("cache/data.txt", "a");
-    if (cachedata == NULL)
-    {
-        printf("Error al abrir el archivo data.txt update\n");
-        return -1;
-    }
-    fprintf(cachedata, "%s\n", data);
-    fclose(cachedata);
-
     return 0;
 }
 
@@ -119,6 +63,104 @@ int update_cache(Cache_ *cache)//crea o actualiza el archivo metadata.txt
     fprintf(cachedata, "Tamano actual: %d\n", cache->size);
 
     fclose(cachedata);
+    return 0;
+}
+
+int rewrite_data(Cache_ *cache)//reescribe el archivo data.txt cuando el cache esta lleno
+{
+    printf("dentro de rewrite data\n");
+
+    if(cache == NULL || cache->head == NULL)
+    {
+        printf("Error: cache es NULL\n");
+        return -1;
+    }
+
+    FILE *data = fopen("cache/data.txt", "w");
+    if (data == NULL)
+    {
+        printf("Error al abrir el archivo data.txt para reescribir\n");
+        return -1;
+    }
+
+    int count = 0;
+    Node_ *current = cache->head;
+    while(current != NULL && count < cache->capacity)
+    {
+        count++;
+        current = current->next;
+    }
+
+    Node_ *nodes[count];
+    current = cache->head;
+    for(int i = 0; i < count; i++)
+    {
+        nodes[i] = current;
+        current = current->next;
+    }
+
+    for(int i = count - 1; i >= 0; i--)
+    {
+        if(nodes[i]->data != NULL)
+        {
+            fprintf(data, "%s\n", nodes[i]->data);
+        }
+    }
+    fclose(data);
+    printf("Archivo data.txt reescrito con exito\n");
+    return 0;
+}
+// AQUI EMPEZO
+int load_data(Cache_ *cache)
+{
+    if (!cache)
+        return -1;
+
+    FILE *data = fopen("cache/data.txt", "r");
+    if (!data)
+    {
+        printf("No se pudo abrir data.txt\n");
+        return -1;
+    }
+
+    char buffer[256];
+    cache->head = NULL;
+    cache->size = 0;
+
+    while (fgets(buffer, sizeof(buffer), data) && cache->size < cache->capacity)
+    {
+        buffer[strcspn(buffer, "\n")] = 0; // Quita '\n'
+
+        Node_ *new_node = malloc(sizeof(Node_));
+        if (!new_node)
+        {
+            printf("Error al asignar memoria\n");
+            fclose(data);
+            return -1;
+        }
+
+        new_node->data = strdup(buffer);
+        new_node->next = cache->head;
+        cache->head = new_node;
+
+        cache->size++;
+    }
+
+    fclose(data);
+    return 0;
+}
+
+int update_data(char *data)//crea o actualiza el archivo data.txt
+{
+    FILE *cachedata = fopen("cache/data.txt", "a");
+    if (cachedata == NULL)
+    {
+        printf("Error al abrir el archivo data.txt update\n");
+        return -1;
+    }
+    fprintf(cachedata, "%s\n", data);
+    fclose(cachedata);
+
     return 0;
 }
 

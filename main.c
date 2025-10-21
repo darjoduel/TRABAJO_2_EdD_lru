@@ -48,11 +48,11 @@ int main(int argc, char *argv[])
         break;
     case all:
         cache= lru_load_cache(cache);
-        load_data(cache);
         if(cache == NULL) {
             printf("Error al cargar el cache. Asegurese de crear uno primero.\n");
             return -1;
         }
+        load_data(cache);
         lru_all(cache);
         break;
     case get:

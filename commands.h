@@ -63,14 +63,18 @@ Cache_* lru_load_cache()
 
 int lru_add(Cache_ *cache, char *data)
 {
-    Node_ *TempNode = (Node_ *)malloc(sizeof(Node_));
-
     if(cache == NULL)
     {
         printf("Cache no inicializado. Use 'create <tamano_cache>' para crear uno.\n");
         return -1;
     }
-
+    
+    Node_ *TempNode = (Node_ *)malloc(sizeof(Node_));
+    if(TempNode == NULL)
+    {
+        printf("Error al asignar memoria para el nuevo nodo\n");
+        return -1;
+    }
     TempNode->data = strdup(data);
     TempNode->next = cache->head;
     cache->head = TempNode;
@@ -79,56 +83,68 @@ int lru_add(Cache_ *cache, char *data)
     {
         cache->size++;
         printf("Dato '%s' agregado al cache. Tamano actual: %d\n", data, cache->size);
+        update_data(data);
     }
-    else//hasta aqui bien
+    else//aqui debe estar la funcion para reescribir el archivo data.txt
     {
+        printf("Cache lleno. Reescribiendo data.txt...\n");
         Node_ *current = cache->head;
         Node_ *prev = NULL;
 
-        while(current->next != NULL) {
+        if(cache->head == NULL) {
+            printf("Error: el cache esta vacio, no se puede eliminar ningun dato\n");
+            return -1;
+        }
+        
+        while(current->next != NULL)
+        {
+            printf("avanzando en la lista\n");
             prev = current;
             current = current->next;
         }
 
-        if(prev != NULL) {
+        printf("Eliminando dato menos reciente: '%s'\n", current->data);
+
+        if(prev != NULL)
+        {
             prev->next = NULL;
             free(current->data);
             free(current);
         }
+
+        rewrite_data(cache);
         printf("Cache lleno. Dato '%s' agregado al cache, el dato menos reciente fue eliminado.\n", data);
     }
 //hasta aqui nose
     update_cache(cache);
-    update_data(data);
 //hasta aqui bien
     return 0;
 }
 
 int lru_all(Cache_ *cache)
-{//funciona hasta all eso es lo que queda por ver
-    if(cache == NULL)
+{
+    if(cache == NULL || cache->head == NULL)
     {
-        printf("Cache no inicializado. Use 'create <tamano_cache>' para crear uno.\n");
+        printf("Cache vacio.\n");
         return -1;
     }
 
-    printf("Contenido del cache (de mas reciente a menos reciente):\n");
-    Node_ *reader = cache->head;
-    while(reader != NULL)
+    Node_ *current = cache->head;
+    int index = 1;
+
+    while(current != NULL)
     {
-        printf("dentro del while\n");
-        if (reader->data == NULL)
-            printf("Dato nulo en este nodo!\n");
+        if(current->data == NULL)
+        {
+            printf("[%d] Dato NULL\n", index);
+        }
         else
-            printf("Dato: '%s'\n", reader->data);
+        {
+            printf("[%d] %s\n", index, current->data);
+        }
 
-        if (reader->next == NULL)
-            printf("Este era el último nodo.\n");
-        else
-            printf("Siguiente nodo existe.\n");
-
-        reader = reader->next;
-
+        current = current->next;
+        index++;
     }
 
     return 0;
