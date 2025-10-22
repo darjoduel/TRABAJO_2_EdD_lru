@@ -1,6 +1,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#if !defined(_WIN32)
+// Definición portable de strdup para Linux / Codespaces
+char *strdup(const char *s) {
+    if (!s) return NULL;
+    size_t len = strlen(s) + 1;
+    char *p = malloc(len);
+    if (!p) {
+        fprintf(stderr, "Error: malloc falló en strdup\n");
+        exit(1);
+    }
+    memcpy(p, s, len);
+    return p;
+}
+#endif
+
 #include "commands.h"
 
 #define help 168620

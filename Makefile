@@ -1,21 +1,28 @@
+# Makefile portable para LRU
 CC = gcc
 CFLAGS = -Wall -Wextra -std=c99
-OBJ = lru.o
-DEPS = function.h commands.h structures.h
+TARGET = lru
 
-all: lru.exe
+all: $(TARGET)
 
-lru.exe: $(OBJ)
-	$(CC) $(CFLAGS) -o lru.exe $(OBJ)
-
-
-lru.o: lru.c $(DEPS)
-	$(CC) $(CFLAGS) -c lru.c
-
-
-
-
+$(TARGET): lru.c
+	$(CC) $(CFLAGS) -o $(TARGET) lru.c
 
 clean:
-	del /Q *.o main.exe
+	del /f /q $(TARGET).exe 2>nul || rm -f $(TARGET)
 
+.PHONY: all clean
+# Makefile portable para LRU
+CC = gcc
+CFLAGS = -Wall -Wextra -std=c99
+TARGET = lru
+
+all: $(TARGET)
+
+$(TARGET): lru.c
+	$(CC) $(CFLAGS) -o $(TARGET) lru.c
+
+clean:
+	del /f /q $(TARGET).exe 2>nul || rm -f $(TARGET)
+
+.PHONY: all clean
