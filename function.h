@@ -91,27 +91,36 @@ int rewrite_data(Cache_ *cache)//reescribe el archivo data.txt cuando el cache e
         current = current->next;
     }
 
-    Node_ *nodes[count];
+    Node_ **nodes = malloc(count * sizeof(Node_*));
+    if (nodes == NULL)
+    {
+        fclose(data);
+        printf("Error al asignar memoria\n");
+        return -1;
+    }
+
     current = cache->head;
-    for(int i = 0; i < count; i++)
+    for (int i = 0; i < count; i++)
     {
         nodes[i] = current;
         current = current->next;
     }
 
-    for(int i = count - 1; i >= 0; i--)
+    for (int i = count - 1; i >= 0; i--)
     {
-        if(nodes[i]->data != NULL)
+        if (nodes[i]->data != NULL)
         {
             fprintf(data, "%s\n", nodes[i]->data);
         }
     }
+
+    free(nodes);
     fclose(data);
     printf("Archivo data.txt reescrito con exito\n");
     return 0;
 }
-// AQUI EMPEZO
-int load_data(Cache_ *cache)
+
+int load_data(Cache_ *cache)//carga data.txt en la estructura Cache_
 {
     if (!cache)
         return -1;
@@ -150,38 +159,6 @@ int load_data(Cache_ *cache)
     return 0;
 }
 
-void Search_data(Cache_ *cache, const char *key){
-
-        if (cache == NULL || cache->head == NULL){
-
-                printf("Cache vacio o no inicializado");
-                return -1;
-
-        }
-
-        Node_ *current = cache->head;
-
-        int posicion = 0;
-
-        while (current != NULL){
-        
-        if(strcmp(current->data, key)==0){
-
-                printf ("elemento %s encontrado en la posicion %d", key, posicion);
-                return posicion;
-        
-        }
-        
-        current = current->next;
-
-        position = position + 1;
-        
-        }
-        
-        printf ("elemento no encontrado en el cache");
-        return -1;
-}       
-
 int update_data(char *data)//crea o actualiza el archivo data.txt
 {
     FILE *cachedata = fopen("cache/data.txt", "a");
@@ -196,10 +173,25 @@ int update_data(char *data)//crea o actualiza el archivo data.txt
     return 0;
 }
 
-void swap(char **a, char **b) {
-    char *temp = *a;
-    *a = *b;
-    *b = temp;
+void swap(Cache_ *cache, char *data)
+{
+    Node_ *current = cache->head;
+    Node_ *prev = NULL;
+
+    while(current->next != NULL) {
+        prev = current;
+        current = current->next;
+
+        if(strcmp(current->data, data) == 0) {
+            // Mover el nodo al frente
+            if(prev != NULL) {
+                prev->next = current->next;
+                current->next = cache->head;
+                cache->head = current;
+            }
+            return;
+        }
+    }
 }
 
 int isFull(Cache_ *cache) {

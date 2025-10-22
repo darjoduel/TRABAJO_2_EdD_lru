@@ -1,16 +1,16 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -std=c99
-OBJ = main.o
+OBJ = lru.o
 DEPS = function.h commands.h structures.h
 
-all: main.exe
+all: lru.exe
 
-main.exe: $(OBJ)
-	$(CC) $(CFLAGS) -o main.exe $(OBJ)
+lru.exe: $(OBJ)
+	$(CC) $(CFLAGS) -o lru.exe $(OBJ)
 
 
-main.o: main.c $(DEPS)
-	$(CC) $(CFLAGS) -c main.c
+lru.o: lru.c $(DEPS)
+	$(CC) $(CFLAGS) -c lru.c
 
 
 

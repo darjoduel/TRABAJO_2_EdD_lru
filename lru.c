@@ -37,14 +37,22 @@ int main(int argc, char *argv[])
         break;
     case add:
         cache = lru_load_cache(cache);
-        load_data(cache);
         if(cache == NULL) {
             printf("Error al cargar el cache. Asegurese de crear uno primero.\n");
             return -1;
         }
+        load_data(cache);
         lru_add(cache, argv[2]);
         break;
     case search:
+        cache= lru_load_cache(cache);
+        if(cache == NULL)
+        {
+            printf("Error al cargar el cache. Asegurese de crear uno primero.\n");
+            return -1;
+        }
+        load_data(cache);
+        lru_search(cache, argv[2]);
         break;
     case all:
         cache= lru_load_cache(cache);
@@ -56,13 +64,17 @@ int main(int argc, char *argv[])
         lru_all(cache);
         break;
     case get:
+        cache= lru_load_cache(cache);
+        if(cache == NULL)
+        {
+            printf("Error al cargar el cache. Asegurese de crear uno primero.\n");
+            return -1;
+        }
+        load_data(cache);
+        lru_get(cache, argv[2]);
         break;
     case exit:
-        if(cache != NULL) {
-            free(cache->data);
-            free(cache);
-            printf("Cache eliminado\n");
-        }
+        lru_exit();
         break;
     default:
         break;

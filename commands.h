@@ -68,6 +68,11 @@ int lru_add(Cache_ *cache, char *data)
         printf("Cache no inicializado. Use 'create <tamano_cache>' para crear uno.\n");
         return -1;
     }
+    if(search_data(cache, data) == 1)
+    {
+        printf("El dato '%s' ya existe en el cache. No se agrego.\n", data);
+        return -1;
+    }
     
     Node_ *TempNode = (Node_ *)malloc(sizeof(Node_));
     if(TempNode == NULL)
@@ -98,7 +103,6 @@ int lru_add(Cache_ *cache, char *data)
         
         while(current->next != NULL)
         {
-            printf("avanzando en la lista\n");
             prev = current;
             current = current->next;
         }
@@ -115,9 +119,7 @@ int lru_add(Cache_ *cache, char *data)
         rewrite_data(cache);
         printf("Cache lleno. Dato '%s' agregado al cache, el dato menos reciente fue eliminado.\n", data);
     }
-//hasta aqui nose
     update_cache(cache);
-//hasta aqui bien
     return 0;
 }
 
@@ -140,12 +142,86 @@ int lru_all(Cache_ *cache)
         }
         else
         {
-            printf("[%d] %s\n", index, current->data);
+            printf("%s", current->data);
         }
-
+        if(index != cache->size)
+        {
+            printf(" - ");
+        }
         current = current->next;
         index++;
     }
+
+    return 0;
+}
+
+int lru_search(Cache_ *cache, char *data)
+{
+    if(cache == NULL || cache->head == NULL)
+    {
+        printf("Cache vacio.\n");
+        return -1;
+    }
+
+    if(search_data(cache, data) == 0)
+    {
+        printf("Dato '%s' no encontrado en el cache.\n", data);
+        return -1;
+    }
+    else
+    {
+        printf("Dato '%s' encontrado en el cache.\n", data);
+    }
+
+    return 0;
+}
+
+int lru_get(Cache_ *cache, char *data)
+{
+    if(cache == NULL || cache->head == NULL)
+    {
+        printf("Cache vacio.\n");
+        return -1;
+    } 
+
+    if(search_data(cache, data) == 0)
+    {
+        printf("Dato '%s' no encontrado en el cache.\n", data);
+        return -1;
+    }
+    //necesito un swap que recorra desde el nodo encontrado hasta el head
+    
+    swap(cache, data);
+    rewrite_data(cache);
+    printf("Dato '%s' movido a la posicion mas reciente del cache.\n", data);
+
+    return 0;
+}
+
+int lru_exit()
+{
+    printf("Eliminando cache y saliendo del programa...\n");
+
+    #ifdef _WIN32
+        if(system("rmdir /S /Q cache") == -1)
+        {
+            printf("Error al eliminar la carpeta cache\n");
+        }
+        else
+        {
+            printf("Carpeta cache eliminada con exito\n");
+        }
+    #else
+        if(system("rm -rf cache") == -1)
+        {
+            printf("Error al eliminar la carpeta cache\n");
+        }
+        else
+        {
+            printf("Carpeta cache eliminada con exito\n");
+        }   
+
+    #endif
 
     return 0;
 }
