@@ -66,10 +66,29 @@ int update_cache(Cache_ *cache)//crea o actualiza el archivo metadata.txt
     return 0;
 }
 
+int search_data(Cache_ *cache, char *data)//busca un dato en el cache
+{
+    if(cache == NULL || cache->head == NULL)
+    {
+        return -1;
+    }
+
+    Node_ *current = cache->head;
+
+    while(current != NULL)
+    {
+        if(strcmp(current->data, data) == 0)
+        {
+            return 1; // Dato encontrado
+        }
+        current = current->next;
+    }
+
+    return 0; // Dato no encontrado
+}
+
 int rewrite_data(Cache_ *cache)//reescribe el archivo data.txt cuando el cache esta lleno
 {
-    printf("dentro de rewrite data\n");
-
     if(cache == NULL || cache->head == NULL)
     {
         printf("Error: cache es NULL\n");
@@ -116,7 +135,6 @@ int rewrite_data(Cache_ *cache)//reescribe el archivo data.txt cuando el cache e
 
     free(nodes);
     fclose(data);
-    printf("Archivo data.txt reescrito con exito\n");
     return 0;
 }
 
