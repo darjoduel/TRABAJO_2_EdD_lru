@@ -31,6 +31,7 @@ int load_cachedata(Cache_ *cache)//carga metadata.txt en la estructura Cache_
         return -1;
     }
     char buffer[256];
+    // Lee línea por linea el archivo
     while (fgets(buffer, sizeof(buffer), cachedata))
     {
         if (sscanf(buffer, "Capacidad: %d", &cache->capacity) == 1) {

@@ -5,7 +5,7 @@
 #include "function.h"
 #include <string.h>
 
-Cache_ *lru_create(int capacity)
+Cache_ *lru_create(int capacity) // Comando de creación de cache
 {
     if (capacity < 5) {
         printf("La capacidad minima es 5\n");
@@ -41,7 +41,7 @@ Cache_ *lru_create(int capacity)
     return cache;
 }
 
-Cache_* lru_load_cache()
+Cache_* lru_load_cache() // Carga el cache existente
 {
     Cache_ *cache = (Cache_ *)malloc(sizeof(Cache_));
     if (cache == NULL) {
@@ -61,7 +61,7 @@ Cache_* lru_load_cache()
     return cache;
 }
 
-int lru_add(Cache_ *cache, char *data)
+int lru_add(Cache_ *cache, char *data) // Comando para agregar un dato al cache
 {
     if(cache == NULL)
     {
@@ -123,7 +123,7 @@ int lru_add(Cache_ *cache, char *data)
     return 0;
 }
 
-int lru_all(Cache_ *cache)
+int lru_all(Cache_ *cache) // Comando para mostrar todos los datos en el cache
 {
     if(cache == NULL || cache->head == NULL)
     {
@@ -155,28 +155,38 @@ int lru_all(Cache_ *cache)
     return 0;
 }
 
-int lru_search(Cache_ *cache, char *data)
+int lru_search(Cache_ *cache, char *data) // Comando de búsqueda de un dato en el cache
 {
     if(cache == NULL || cache->head == NULL)
     {
-        printf("Cache vacio.\n");
+        printf("Cache vacio. Resultado: -1\n");
         return -1;
     }
 
-    if(search_data(cache, data) == 0)
+    Node_ *current = cache->head;
+    int posicion = 1; // Empezamos a contar desde 1 para la posición
+
+    while(current != NULL)
     {
-        printf("Dato '%s' no encontrado en el cache.\n", data);
-        return -1;
-    }
-    else
-    {
-        printf("Dato '%s' encontrado en el cache.\n", data);
+        // Compara el dato actual con el buscado
+        if(strcmp(current->data, data) == 0)
+        {
+            // ¡Encontrado! Imprime la posición 
+            printf("Dato '%s' encontrado en la posicion: %d\n", data, posicion);
+            return 0; // Termina la función con éxito
+        }
+        
+        // Si no es el dato, avanza al siguiente nodo
+        current = current->next;
+        posicion++; // Incrementa el contador de posición
     }
 
-    return 0;
+    // Si el bucle termina, significa que no se encontró
+    printf("Dato '%s' no encontrado en el cache. Resultado: -1\n", data);
+    return -1; // Retorna -1 (como valor de error)
 }
 
-int lru_get(Cache_ *cache, char *data)
+int lru_get(Cache_ *cache, char *data) // Comandos para obtener un dato del cache
 {
     if(cache == NULL || cache->head == NULL)
     {
@@ -198,7 +208,7 @@ int lru_get(Cache_ *cache, char *data)
     return 0;
 }
 
-int lru_exit()
+int lru_exit() // Comando para salir y eliminar el cache
 {
     printf("Eliminando cache y saliendo del programa...\n");
 
