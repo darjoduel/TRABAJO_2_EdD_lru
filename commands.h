@@ -182,7 +182,7 @@ int lru_search(Cache_ *cache, char *data) // Comando de busqueda de un dato en e
         printf("Dato '%s' encontrado en el cache.\n", data);
     }
 
-    return -1;
+    return 0;
 }
 
 int lru_get(Cache_ *cache, char *data) // Comandos para obtener un dato del cache
