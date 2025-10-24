@@ -38,7 +38,6 @@ int load_cachedata(Cache_ *cache)//carga metadata.txt en la estructura Cache_
     FILE *cachedata = fopen("cache/cachedata.txt", "r");
     if (!cachedata)
     {
-        printf("Error al abrir el archivo metadata.txt\n");
         return -1;
     }
     char buffer[256];
