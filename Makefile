@@ -23,6 +23,6 @@ $(TARGET): lru.c
 	$(CC) $(CFLAGS) -o $(TARGET) lru.c
 
 clean:
-	rm -f $(TARGET).exe $(TARGET) $(TARGET).o lru.o
+	del /f /q $(TARGET).exe 2>nul || rm -f $(TARGET)
 
 .PHONY: all clean

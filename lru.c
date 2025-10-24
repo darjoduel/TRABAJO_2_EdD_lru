@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
     case add:
         cache = lru_load_cache(cache);
         //Verifica si el cache se cargo correctamente
-        if(cache == NULL) {
+        if(!cache) {
             printf("Error al cargar el cache. Asegurese de crear uno primero.\n");
             return -1;
         }
@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
     // Comando de búsqueda de un dato en el cache
     case search:
         cache= lru_load_cache(cache);
-        if(cache == NULL)
+        if(!cache)
         {
             printf("Error al cargar el cache. Asegurese de crear uno primero.\n");
             return -1;
@@ -78,7 +78,7 @@ int main(int argc, char *argv[])
     // Comando para mostrar todos los datos en el cache
     case all:
         cache= lru_load_cache(cache);
-        if(cache == NULL) {
+        if(!cache) {
             printf("Error al cargar el cache. Asegurese de crear uno primero.\n");
             return -1;
         }
@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
     // Comando para obtener un dato del cache
     case get:
         cache= lru_load_cache(cache);
-        if(cache == NULL)
+        if(!cache)
         {
             printf("Error al cargar el cache. Asegurese de crear uno primero.\n");
             return -1;
@@ -107,11 +107,13 @@ int main(int argc, char *argv[])
     return 0;
 }
 
+//transforma un string en un numero
 int CharToNum(char *str)
 {
     return atoi(str);
 }
 
+//transforma un string en un entero
 int CharToInt(char *str)
 {
     int result=0;
